@@ -49,10 +49,10 @@ export class MediaService extends BaseService {
     const assetPagination = usePagination(JOBS_ASSET_PAGINATION_SIZE, (pagination) => {
       return force
         ? this.assetRepository.getAll(pagination, {
-            isVisible: true,
-            withDeleted: true,
-            withArchived: true,
-          })
+          isVisible: true,
+          withDeleted: true,
+          withArchived: true,
+        })
         : this.assetRepository.getWithout(pagination, WithoutProperty.THUMBNAIL);
     });
 
@@ -506,7 +506,8 @@ export class MediaService extends BaseService {
   private async getDevices() {
     try {
       return await this.storageRepository.readdir('/dev/dri');
-    } catch {
+    } catch (exception: unknown) {
+      this.logger.error(`Exception while listing /dev/dri: ${exception}`);
       this.logger.debug('No devices found in /dev/dri.');
       return [];
     }
